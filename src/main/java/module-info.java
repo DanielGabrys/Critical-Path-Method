@@ -1,8 +1,15 @@
-module com.example.cpn {
+module boil.cpm {
     requires javafx.controls;
     requires javafx.fxml;
-            
-                        
-    opens com.example.cpn to javafx.fxml;
-    exports com.example.cpn;
+    requires javafx.web;
+
+    requires org.controlsfx.controls;
+    requires com.dlsc.formsfx;
+    requires validatorfx;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.bootstrapfx.core;
+    requires eu.hansolo.tilesfx;
+
+    opens boil.cpm to javafx.fxml;
+    exports boil.cpm;
 }
