@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boil.cpm.MainPageController">
+   <children>
+      <Button fx:id="load" layoutX="425.0" layoutY="400.0" mnemonicParsing="false" prefWidth="200.0" text="WCZYTAJ">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+
+
+            <Label fx:id="title_label" alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="14.0" prefHeight="39.0" prefWidth="794.0" text="CPM" textFill="#eb0e0e">
+               <font>
+                  <Font size="31.0" />
+               </font>
+            </Label>
+            <TableView fx:id="table_input" editable="true" layoutX="180.0" layoutY="80.0" prefHeight="300.0">
+              <columns>
+                <TableColumn fx:id="activity" prefWidth="100.0" text="Czynność" />
+                <TableColumn fx:id="time" prefWidth="160.0" text=" Czas trwania (dni)" />
+                  <TableColumn fx:id="sequence" prefWidth="200.0" text="Następstwo  zdarzeń" />
+              </columns>
+            </TableView>
+            <Button fx:id="add_activity" layoutX="190.0" layoutY="400.0" mnemonicParsing="false" onAction="#add_activity" prefWidth="200.0" text="DODAJ CZYNNOŚĆ">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+      <HBox fx:id="input_panel" layoutX="188.0" layoutY="462.0" prefHeight="72.0" prefWidth="436.0">
+         <children>
+      
+      
+                  <TextField fx:id="activity_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="Aktywność" />
+                  <TextField fx:id="time_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="czas" />
+                  <TextField fx:id="sequence_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="sekwencja" />
+         </children>
+      </HBox>
+
+
+        
+
+   </children>
+</AnchorPane>
