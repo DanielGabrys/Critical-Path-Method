@@ -1,5 +1,6 @@
 package boil.cpm;
 
+import org.graphstream.graph.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 import java.net.URL;
@@ -35,7 +37,7 @@ public class MainPageController implements Initializable {
     private Button add_activity;
 
     @FXML
-    private Button load;
+    private Button load_data;
 
     @FXML
     private HBox input_panel;
@@ -53,11 +55,33 @@ public class MainPageController implements Initializable {
     void add_activity(ActionEvent event)
     {
 
+
         System.out.println(activity_input_field.getText());
         System.out.println(time_input_field.getText());
         System.out.println(sequence_input_field.getText());
+
         list.add(new Activity(activity_input_field.getText(),Integer.parseInt(time_input_field.getText()),sequence_input_field.getText()));
         table_input.setItems(list);
+    }
+
+    @FXML
+    void load_data(ActionEvent event)
+    {
+
+        System.out.println("elo");
+        System.setProperty("org.graphstream.ui", "swing");
+        Graph graph = new SingleGraph("Tutorial 1");
+
+
+
+        graph.addNode("A" );
+        graph.addNode("B" );
+        graph.addNode("C" );
+        graph.addEdge("AB", "A", "B");
+        graph.addEdge("BC", "B", "C");
+        graph.addEdge("CA", "C", "A");
+
+        graph.display();
     }
 
 

@@ -6,7 +6,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boil.cpm.MainPageController">
    <children>
-      <Button fx:id="load" layoutX="425.0" layoutY="400.0" mnemonicParsing="false" prefWidth="200.0" text="WCZYTAJ">
+      <Button fx:id="load_data" layoutX="425.0" layoutY="400.0" mnemonicParsing="false" onAction="#load_data" prefWidth="200.0" text="WCZYTAJ">
          <font>
             <Font size="18.0" />
          </font>
@@ -34,7 +34,7 @@
          <children>
       
       
-                  <TextField fx:id="activity_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="Aktywność" />
+                  <TextField fx:id="activity_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="aktywność" />
                   <TextField fx:id="time_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="czas" />
                   <TextField fx:id="sequence_input_field" alignment="CENTER" prefHeight="40.0" prefWidth="450.0" promptText="sekwencja" />
          </children>
