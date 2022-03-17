@@ -1,5 +1,6 @@
 package boil.cpm;
 
+import javafx.collections.ObservableList;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -13,29 +14,29 @@ public class Graph {
 
     public org.graphstream.graph.Graph graph;
 
-    public Graph()
+    public Graph(ObservableList<Activity> list )
         {
             this.graph = new SingleGraph("CPM");
 
             // inluclude css styles
             graph.setAttribute("ui.stylesheet", styleSheet);
+
             graph.setAutoCreate(true);
             graph.setStrict(false);
             graph.display();
 
+            for(int i=0;i<list.size();i++)
+            {
+                String weight = list.get(i).getTime()+" "+list.get(i).getActivity();
 
-            graph.addEdge("A", "1", "2").setAttribute("length","3 A");
-            graph.addEdge("B", "2", "3").setAttribute("length","4 B");
-            graph.addEdge("C", "2", "4").setAttribute("length","6 C");
-            graph.addEdge("D", "3", "5").setAttribute("length","7 D");
-            graph.addEdge("E", "5", "7").setAttribute("length","1 E");
-            graph.addEdge("F", "4", "7").setAttribute("length","2 F");
-            graph.addEdge("G", "4", "6").setAttribute("length","3 G");
-            graph.addEdge("H", "6", "7").setAttribute("length","4 H");
-            graph.addEdge("I", "7", "8").setAttribute("length","1 I");
-            graph.addEdge("J", "8", "9").setAttribute("length","2 K");
+                graph.addEdge(list.get(i).getActivity(),
+                              list.get(i).getPrevious_sequence(),
+                              list.get(i).getNext_sequence()).setAttribute("length",weight);
 
-            //
+                //graph.addEdge("A", "1", "2").setAttribute("length","3 A");
+            }
+
+            //node fields
             for (Node node : graph)
             {
                 node.setAttribute("ui.label", node.getId()+" | "+3 +" | "+3 +" | "+3);
@@ -49,7 +50,7 @@ public class Graph {
 
             //example critical path(nodes)
             List<String> critical_path = Arrays.asList("1", "2", "3","5", "7","8","9");
-            markCriticalPath(critical_path);
+           // markCriticalPath(critical_path);
         }
 
         public void explore(Node source)

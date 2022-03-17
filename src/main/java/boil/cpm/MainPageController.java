@@ -60,18 +60,20 @@ public class MainPageController implements Initializable {
         System.out.println(time_input_field.getText());
         System.out.println(sequence_input_field.getText());
 
-        list.add(new Activity(activity_input_field.getText(),Integer.parseInt(time_input_field.getText()),sequence_input_field.getText()));
+        Activity a = new Activity(activity_input_field.getText(),Integer.parseInt(time_input_field.getText()),sequence_input_field.getText());
+        list.add(a);
         table_input.setItems(list);
+
+        System.out.println(a.getPrevious_sequence());
+        System.out.println(a.getNext_sequence());
     }
 
     @FXML
     void load_data(ActionEvent event)
     {
         System.setProperty("org.graphstream.ui", "swing");
-        Graph graph = new Graph();
+        Graph graph = new Graph(this.list);
     }
-
-
 
     ObservableList<Activity> list = FXCollections.observableArrayList(
             new Activity("A",3,"1-2"),
