@@ -97,8 +97,10 @@ public class Graph
             String weight = list.get(i).getTime()+" "+list.get(i).getActivity();
 
             graph.addEdge(list.get(i).getActivity(),
-                    list.get(i).getPrevious_sequence(),
-                    list.get(i).getNext_sequence()).setAttribute("length",weight);
+                         list.get(i).getPrevious_sequence(),
+                         list.get(i).getNext_sequence(),true).setAttribute("length",weight);
+
+
 
             //graph.addEdge("A", "1", "2").setAttribute("length","3 A");
         }
@@ -117,6 +119,7 @@ public class Graph
         for (int i = 0; i < graph.getEdgeCount(); i++)
         {
             Edge e = graph.getEdge(i);
+            System.out.println(e.isDirected());
             e.setAttribute("label", "" +  e.getAttribute("length"));
 
             Sprite s = sman.addSprite(e.getId());
@@ -157,6 +160,8 @@ public class Graph
                     "{"+
                     "fill-color: yellow;"+
                     "size: 3px;"+
+                    "arrow-shape:arrow;"+
+                    "arrow-size:10px, 20px;"+
                     "}"+
             "sprite " +
                     "{" +
