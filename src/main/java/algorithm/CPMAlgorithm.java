@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CPMAlgorithm
@@ -115,68 +116,97 @@ public class CPMAlgorithm
     //private static void numberEvents(List<Action> actions)
     public static void numberEvents(List<Action> actions)
     {
-        List<Action> currentIteration = new ArrayList<>();
-        List<Action> nextIteration = new ArrayList<>();
-        List<Action> excludedActions = new ArrayList<>();
+        int newStart = 0;
+        int newEnd = 0;
         for(Action action : actions)
         {
-            //if (action.getStartEvent() == 1) currentIteration.add(action);
-            if (action.getStartEvent() == 1) nextIteration.add(action);
-        }
-
-        eventNumber = 2;
-        boolean canBeNumbered = true;
-        boolean willIncrementEventNumber = false;
-        while(!currentIteration.isEmpty())
-        {
-            currentIteration.addAll(nextIteration);
-            for(int i=0; i<currentIteration.size(); i++)
+            if(action.getStartEvent() > action.getEndEvent())
             {
-                for(int j=0; j<actions.size(); j++)
+                newEnd = action.getStartEvent();
+                newStart = action.getEndEvent();
+                action.setStartEvent(newStart);
+                action.setEndEvent(newEnd);
+                for(Action action1 : actions)
                 {
-                    if(actions.get(j).getStartEvent() == currentIteration.get(i).getEndEvent())
-                    {
-                        for(int k=0; k<actions.size(); k++)
-                        {
-                            if(j!=k && actions.get(j).getEndEvent() == actions.get(k).getEndEvent()
-                                    && !excludedActions.contains(k))
-                            {
-                                canBeNumbered = false;
-                                break;
-                            }
-                        }
-                        if(canBeNumbered)
-                        {
-                            currentIteration.get(i).setEndEvent(eventNumber);
-                            actions.get(j).setStartEvent(eventNumber);
-                            willIncrementEventNumber = true;
-                            //currentIteration.add(actions.get(j));
-                            nextIteration.add(actions.get(j));
+                    if(action != action1) {
+                        if (action1.getStartEvent() == newStart) {
+                            action1.setStartEvent(newEnd);
+                        } else if (action1.getEndEvent() == newEnd) {
+                            action1.setEndEvent(newStart);
+                        } else if (action1.getEndEvent() == newStart) {
+                            action1.setEndEvent(newEnd);
+                        } else if (action1.getStartEvent() == newEnd) {
+                            action1.setStartEvent(newStart);
                         }
                     }
-                    canBeNumbered = true;
                 }
-                if(willIncrementEventNumber)
-                {
-                    excludedActions.add(currentIteration.get(i));
-                    //currentIteration.remove(i);
-                    nextIteration.remove(currentIteration.get(i));
-                    eventNumber++;
-                }
-                willIncrementEventNumber = false;
             }
         }
+    }
 
-        //biorę czynności startowe i dodaję je do currentIteration
-        //for po czynnościach z iteracji
-        //znajdowanie czynności mającej początek w końcu czynności z iteracji
-        //  jeśli jakakolwiek inna czynność [poza listą wykluczonych] ma koniec w końcu czynności z iteracji to
-        //      zostaje zignorowana
-        //  jeśli w początku znalezionej czynności nie kończy się żadna czynność poza czynnością z iteracji [oraz listą wykluczonych] to
-        //      początek znalezionej czynności = koniec czynności z iteracji = eventNumber (trzeba inkrementować eventNumber dopiero po iteracji!)
-        //      dodanie znalezionej czynności do następnej iteracji
-        //usunięcie czynności z iteracji z iteracji [sic!], ale dopiero po pełnej iteracji, ale tylko gdy czynność została ,,użyta" + dodanie tej czynności do listy wykluczonych
-        //rof
+    //private static void stepForward(List<Action> actions)
+    public static void stepForward(List<Action> actions)
+    {
+        float maxEF = 0.F;
+        for(Action action : actions)
+        {
+            //if(action.getPrecedingActions().isEmpty())
+            if(action.getStartEvent()==1)
+            {
+                action.setEarliestStart(0.F);
+                action.setEarliestFinish(action.getDuration());
+            }
+            else
+            {
+                maxEF = 0.F;
+                for(Action preAction : action.getPrecedingActions())
+                {
+                    if(preAction.getEarliestFinish() > maxEF) maxEF = preAction.getEarliestFinish();
+                }
+                action.setEarliestStart(maxEF);
+                action.setEarliestFinish(maxEF + action.getDuration());
+            }
+        }
+    }
+
+    //private static void stepBackwardAndCalculateReserve(List<Action> actions)
+    public static void stepBackwardAndCalculateReserve(List<Action> actions)
+    {
+        float minLS = 999999.F;
+        float maxEF = 0.F;
+        boolean isThisFirstHit = true;
+        for(Action action : actions) if(action.getEarliestFinish() > maxEF) maxEF = action.getEarliestFinish();
+        for(int i=actions.size()-1; i>=0; i--)
+        //for(int i=0; i<actions.size(); i++)
+        {
+            if(actions.get(i).getEndEvent()==eventNumber)
+            {
+                actions.get(i).setLatestFinish(maxEF);
+                actions.get(i).setLatestStart(maxEF-actions.get(i).getDuration());
+            }
+            else
+            {
+                for(Action action : actions)
+                {
+                    if(action.getPrecedingActions().contains(actions.get(i)))
+                    {
+                        if(isThisFirstHit)
+                        {
+                            minLS = action.getLatestStart();
+                            isThisFirstHit = false;
+                        }
+                        else if(action.getLatestStart() < minLS)
+                        {
+                            minLS = action.getLatestStart();
+                        }
+                    }
+                }
+                actions.get(i).setLatestFinish(minLS);
+                actions.get(i).setLatestStart(minLS - actions.get(i).getDuration());
+                isThisFirstHit = true;
+            }
+            actions.get(i).setReserve(actions.get(i).getLatestFinish() - actions.get(i).getEarliestFinish());
+        }
     }
 
     static void determineCriticalPath(List<Action> actions)
@@ -185,10 +215,13 @@ public class CPMAlgorithm
         determineStartAndEndEvents(actions);
         addApparentActions(actions);
         setEndingEvents(actions);
-        //numberEvents(actions);
-        //SORTOWANIE LISTY
-        //stepForward(actions);
-        //stepBackwardAndCalculateReserve(actions);
+        numberEvents(actions);
+        Collections.sort(actions, new ActionAscendingComparator());
+        stepForward(actions);
+        //Collections.sort(actions, new ActionDescendingComparator()); CZY TO POTRZEBNE? [jeśli tu zmiana, to
+        // w funkcji stepBackward... trzeba odwrócić kierunek przechodzenia pętli]
+        stepBackwardAndCalculateReserve(actions);
+        //Collections.sort(actions, new ActionAscendingComparator());
         eventNumber = 0;
     }
 }
