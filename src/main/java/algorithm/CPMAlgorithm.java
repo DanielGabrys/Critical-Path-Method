@@ -209,7 +209,7 @@ public class CPMAlgorithm
         }
     }
 
-    static void determineCriticalPath(List<Action> actions)
+    public static void determineCriticalPath(List<Action> actions)
     {
         eventNumber = 2;
         determineStartAndEndEvents(actions);

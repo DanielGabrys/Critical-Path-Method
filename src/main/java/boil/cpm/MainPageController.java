@@ -1,5 +1,7 @@
 package boil.cpm;
 
+import algorithm.Action;
+import algorithm.CPMAlgorithm;
 import org.graphstream.graph.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -14,6 +16,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
@@ -72,12 +76,28 @@ public class MainPageController implements Initializable {
     void load_data(ActionEvent event)
     {
         System.setProperty("org.graphstream.ui", "swing");
-        Graph graph = new Graph(this.list);
+        Graph graph = new Graph();
+
+
+        List<Action> testList2 = graph.inputAdapter(this.list);
+        CPMAlgorithm.determineCriticalPath(testList2);
+        for(Action action : testList2)
+        {
+            action.displayWithList();
+        }
+
+        graph.generateGraph(this.list,testList2);
     }
 
     ObservableList<Activity> list = FXCollections.observableArrayList(
-            new Activity("A",3,"1-2"),
-            new Activity("B",2,"2-3")
+            new Activity("A",5,"1-2"),
+            new Activity("B",7,"1-3"),
+            new Activity("C",6,"2-4"),
+            new Activity("D",8,"2-5"),
+            new Activity("E",3,"3-5"),
+            new Activity("F",4,"4-5"),
+            new Activity("G",2,"4-6"),
+            new Activity("H",5,"5-6")
     );
 
     @Override

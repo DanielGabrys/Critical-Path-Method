@@ -15,7 +15,7 @@ public class Action
     private int startEvent = 0;
     private int endEvent = 0;
 
-    Action(String name, float duration, List<Action> precedingActions)
+    public Action(String name, float duration, List<Action> precedingActions)
     {
         this.name = name;
         this.duration = duration;
