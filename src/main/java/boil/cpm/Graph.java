@@ -23,19 +23,17 @@ public class Graph
     public org.graphstream.graph.Graph graph;
 
     public Graph()
-        {
+    {
+        this.graph = new SingleGraph("CPM");
 
-        }
+        // inluclude css styles
+        graph.setAttribute("ui.stylesheet", styleSheet);
 
-    public void explore(Node source)
-        {
-            Iterator<? extends Node> k = source.getBreadthFirstIterator();
-            while (k.hasNext()) {
-                Node next = k.next();
-                //next.setAttribute("ui.class", "marked");
-                sleep();
-            }
-        }
+        graph.setAutoCreate(true);
+        graph.setStrict(false);
+        Viewer viewer = graph.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
+    }
 
     protected void sleep()
         {
@@ -43,13 +41,13 @@ public class Graph
         }
 
     void markCriticalPath(List<String> a)
+    {
+        for(int i=0;i<a.size();i++)
         {
-            for(int i=0;i<a.size();i++)
-            {
                 this.graph.getNode(a.get(i)).setAttribute("ui.class", "marked");
                 sleep();
-            }
         }
+    }
 
     public List inputAdapter(ObservableList<Activity> list )
     {
@@ -81,45 +79,30 @@ public class Graph
 
     public void generateGraph(ObservableList<Activity> list, List<Action> a)
     {
-        this.graph = new SingleGraph("CPM");
 
-        // inluclude css styles
-        graph.setAttribute("ui.stylesheet", styleSheet);
-
-        graph.setAutoCreate(true);
-        graph.setStrict(false);
-        Viewer viewer = graph.display();
-        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.HIDE_ONLY);
-
-
-        for(int i=0;i<list.size();i++)
+        for(int i=0;i<a.size();i++)
         {
-            String weight = list.get(i).getTime()+" "+list.get(i).getActivity();
-
-            graph.addEdge(list.get(i).getActivity(),
-                         list.get(i).getPrevious_sequence(),
-                         list.get(i).getNext_sequence(),true).setAttribute("length",weight);
-
-
-
+            String weight = String.valueOf(a.get(i).getDuration())+" "+String.valueOf(a.get(i).getName());
+            String action_name= a.get(i).getName();
+            String start_node = String.valueOf(a.get(i).getStartEvent());
+            String end_node = String.valueOf(a.get(i).getEndEvent())
+                    ;
+            graph.addEdge(action_name,start_node,end_node,true).setAttribute("length",weight);
             //graph.addEdge("A", "1", "2").setAttribute("length","3 A");
         }
 
         //node fields
-
         for (Node node : graph)
         {
-            //Action action = actionData()
             node.setAttribute("ui.label", node.getId());
         }
 
+        //set edges and spites
         SpriteManager sman = new SpriteManager(graph);
 
-        //set edges
         for (int i = 0; i < graph.getEdgeCount(); i++)
         {
             Edge e = graph.getEdge(i);
-            System.out.println(e.isDirected());
             e.setAttribute("label", "" +  e.getAttribute("length"));
 
             Sprite s = sman.addSprite(e.getId());
@@ -132,17 +115,31 @@ public class Graph
             float LF = a.get(i).getLatestFinish();
             float rez = a. get(i).getReserve();
 
-            String data= ES+" | "+EF+" | "+LS+" | "+LF+" | "+rez;
+            String data= ES+" - "+EF+" - "+LS+" - "+LF+" - "+rez;
 
             s.setAttribute("label", data);
 
         }
 
-        //explore(graph.getNode("1"));
+        // critical path(nodes)
+         markCriticalPath(calculateCriticalPath(a));
+    }
 
-        //example critical path(nodes)
-        List<String> critical_path = Arrays.asList("1", "2", "3","5", "7","8","9");
-        // markCriticalPath(critical_path);
+    public List<String> calculateCriticalPath(List<Action> a)
+    {
+         List<String> path = new ArrayList<>();
+         for (int i=0;i<a.size();i++)
+         {
+             if(a.get(i).getPrecedingActions().size()==0) //initial node
+             {
+                 path.add(String.valueOf(a.get(i).getStartEvent()));
+             }
+             if(a.get(i).getReserve()==0)
+             {
+                 path.add(String.valueOf(a.get(i).getEndEvent()));
+             }
+         }
+         return path;
     }
 
     protected String styleSheet =
@@ -150,6 +147,7 @@ public class Graph
                     "fill-color: red;" +
                     "size: 50px;" +
                     "text-size: 20px;" +
+                    "text-alignment: center;"+
 
                     "}" +
             "node.marked " +
