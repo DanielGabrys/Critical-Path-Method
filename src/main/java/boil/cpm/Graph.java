@@ -24,6 +24,7 @@ public class Graph
 
     public Graph()
     {
+        System.setProperty("org.graphstream.ui", "swing");
         this.graph = new SingleGraph("CPM");
 
         // inluclude css styles
@@ -56,7 +57,7 @@ public class Graph
         {
 
             String action_name= list.get(i).getActivity();
-            float duration = list.get(i).getTime();
+            float duration = Integer.parseInt(list.get(i).getTime());
 
             Action a = new Action(action_name,duration,new ArrayList<Action>());
 
@@ -74,6 +75,15 @@ public class Graph
             input_list.add(a);
         }
 
+        for(int i=0;i<input_list.size();i++)
+        {
+            System.out.print(input_list.get(i).getName()+":");
+            for(int j=0;j<input_list.get(i).getPrecedingActions().size();j++)
+            {
+                System.out.print(input_list.get(i).getPrecedingActions().get(j).getName()+" ");
+            }
+            System.out.println();
+        }
         return input_list;
     }
 

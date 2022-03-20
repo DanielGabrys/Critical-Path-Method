@@ -36,13 +36,13 @@ public class AlgoTest {
 
         Action one = new Action("A", 5.F, new ArrayList<Action>());
         Action two = new Action("B", 7.F, new ArrayList<Action>());
-        Action three = new Action("C", 6.F, new ArrayList<Action>(){{add(one);}});
+       // Action three = new Action("C", 6.F, new ArrayList<Action>(){{add(one);}});
         Action four = new Action("D", 8.F, new ArrayList<Action>(){{add(one);}});
         Action five = new Action("E", 3.F, new ArrayList<Action>(){{add(two);}});
-        Action six = new Action("F", 4.F, new ArrayList<Action>(){{add(three);}});
-        Action seven = new Action("G", 2.F, new ArrayList<Action>(){{add(three);}});
+        Action six = new Action("F", 4.F, new ArrayList<Action>());
+        Action seven = new Action("G", 2.F, new ArrayList<Action>());
         Action eight = new Action("H", 5.F, new ArrayList<Action>(){{add(five);add(four);add(six);}});
-        List<Action> testList2 = new ArrayList<>(){{add(one);add(two);add(three);add(four);add(five);add(six);add(seven);add(eight);}};
+        List<Action> testList2 = new ArrayList<>(){{add(one);add(two);add(four);add(five);add(six);add(seven);add(eight);}};
         CPMAlgorithm.determineCriticalPath(testList2);
         for(Action action : testList2) action.displayWithList();
     }
