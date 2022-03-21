@@ -38,7 +38,7 @@ public class Graph
 
     protected void sleep()
         {
-            try { Thread.sleep(1000); } catch (Exception e) {}
+            try { Thread.sleep(1500); } catch (Exception e) {}
         }
 
     void markCriticalPath(List<String> a)
@@ -129,10 +129,22 @@ public class Graph
 
             s.setAttribute("label", data);
 
+
         }
 
         // critical path(nodes)
-         markCriticalPath(calculateCriticalPath(a));
+
+        Sprite critical = sman.addSprite("critical");
+        critical.detach();
+        critical.setAttribute("ui.class", "critical");
+
+
+        String path=  calculateCriticalPathAction(a);
+        critical.setAttribute("label", "CRITICAL PATH: "+path);
+
+        markCriticalPath(calculateCriticalPath(a));
+
+
     }
 
     public List<String> calculateCriticalPath(List<Action> a)
@@ -150,6 +162,21 @@ public class Graph
              }
          }
          return path;
+    }
+
+    public String calculateCriticalPathAction(List<Action> a)
+    {
+        String path = "";
+        for (int i=0;i<a.size();i++)
+        {
+            if(a.get(i).getReserve()==0)
+            {
+                if(path.length()!=0)
+                    path+="->";
+                path+=a.get(i).getName();
+            }
+        }
+        return path;
     }
 
     protected String styleSheet =
@@ -175,10 +202,15 @@ public class Graph
                     "{" +
                     "shape: box;"+
                     "fill-color: pink;"+
-                    "size: 30px;" +
                     "size-mode: fit;"+
                     "text-alignment: center;"+
                     "text-size: 10px;" +
-                    "}" ;
+                    "}" +
+            "sprite.critical" +
+                    "{" +
+                     "fill-color: green;"   +
+                    "padding: 5px;"+
+                    "text-size: 20px;" +
+                    "}";
 
 }
