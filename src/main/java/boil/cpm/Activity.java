@@ -12,7 +12,8 @@ public class Activity {
     private String next_sequence;
 
 
-    public Activity(String activity, String time, String sequence) {
+    public Activity(String activity, String time, String sequence)
+    {
         this.activity = activity;
         this.time = time;
         this.sequence=sequence;
@@ -20,6 +21,11 @@ public class Activity {
         String segments[] = sequence.split("-");
         this.previous_sequence= segments[0];
         this.next_sequence= segments[segments.length - 1];
+    }
+
+    public void printAll()
+    {
+        System.out.println(activity+" "+time+" "+sequence);
     }
 
     public String getActivity() {
@@ -51,7 +57,11 @@ public class Activity {
         this.time = time;
     }
 
-    public void setSequence(String sequence) {
+    public void setSequence(String sequence)
+    {
         this.sequence = sequence;
+        String segments[] = sequence.split("-");
+        this.previous_sequence= segments[0];
+        this.next_sequence= segments[segments.length - 1];
     }
 }

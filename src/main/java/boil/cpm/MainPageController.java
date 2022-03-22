@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
 public class MainPageController implements Initializable {
 
     ObservableList<Activity> list = FXCollections.observableArrayList(
+
+
             new Activity("A","5","1-2"),
             new Activity("B","7","1-3"),
             new Activity("C","6","2-4"),
@@ -33,6 +35,20 @@ public class MainPageController implements Initializable {
             new Activity("F","4","4-5"),
             new Activity("G","2","4-6"),
             new Activity("H","5","5-6")
+
+
+            /*
+            new Activity("A","3","1-2"),
+            new Activity("B","4","2-3"),
+            new Activity("C","6","2-4"),
+            new Activity("D","7","3-5"),
+            new Activity("E","1","5-7"),
+            new Activity("F","2","4-7"),
+            new Activity("G","3","4-6"),
+            new Activity("H","4","6-7"),
+            new Activity("I","1","7-8"),
+            new Activity("J","2","8-9")
+            */
     );
 
 
@@ -85,15 +101,14 @@ public class MainPageController implements Initializable {
         list.add(a);
         table_input.setItems(list);
 
-        System.out.println(a.getPrevious_sequence());
-        System.out.println(a.getNext_sequence());
+       // System.out.println(a.getPrevious_sequence());
+       // System.out.println(a.getNext_sequence());
     }
 
     @FXML
     void load_data(ActionEvent event)
     {
         Graph graph = new Graph();
-
 
         List<Action> testList2 = graph.inputAdapter(this.list);
         CPMAlgorithm.determineCriticalPath(testList2);
@@ -119,6 +134,11 @@ public class MainPageController implements Initializable {
     {
         Activity selected = table_input.getSelectionModel().getSelectedItem();
         selected.setActivity(cell.getNewValue().toString());
+
+        int id = table_input.getSelectionModel().getSelectedIndex();
+        list.set(id,table_input.getItems().get(id));
+
+
     }
 
     @FXML
@@ -126,6 +146,9 @@ public class MainPageController implements Initializable {
     {
         Activity selected = table_input.getSelectionModel().getSelectedItem();
         selected.setTime(cell.getNewValue().toString());
+
+        int id = table_input.getSelectionModel().getSelectedIndex();
+        list.set(id,table_input.getItems().get(id));
     }
 
     @FXML
@@ -133,6 +156,11 @@ public class MainPageController implements Initializable {
     {
         Activity selected = table_input.getSelectionModel().getSelectedItem();
         selected.setSequence(cell.getNewValue().toString());
+
+        int id = table_input.getSelectionModel().getSelectedIndex();
+        list.set(id,table_input.getItems().get(id));
+
+
     }
 
     @Override

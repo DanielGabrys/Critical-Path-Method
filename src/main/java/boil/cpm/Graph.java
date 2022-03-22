@@ -62,17 +62,18 @@ public class Graph
             Action a = new Action(action_name,duration,new ArrayList<Action>());
 
             List<Action> sequence = new ArrayList<>();
-            for(int j=0;j< list.size();j++)
+            for(int j=0;j<list.size();j++)
             {
-
                 if(parseInt(list.get(i).getPrevious_sequence())==parseInt(list.get(j).getNext_sequence()))
                 {
                   sequence.add(input_list.get(j));
                 }
 
             }
+
             a.setPrecedingActions(sequence);
             input_list.add(a);
+
         }
 
         for(int i=0;i<input_list.size();i++)
