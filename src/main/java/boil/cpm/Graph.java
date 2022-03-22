@@ -10,10 +10,7 @@ import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
@@ -53,28 +50,35 @@ public class Graph
     public List inputAdapter(ObservableList<Activity> list )
     {
         List<Action> input_list = new ArrayList<>();
+        Map<String, Integer> index_map = new HashMap<String, Integer>();
+
         for(int i=0;i<list.size();i++)
         {
-
             String action_name= list.get(i).getActivity();
             float duration = Integer.parseInt(list.get(i).getTime());
-
             Action a = new Action(action_name,duration,new ArrayList<Action>());
 
-            List<Action> sequence = new ArrayList<>();
-            for(int j=0;j<list.size();j++)
-            {
-                if(parseInt(list.get(i).getPrevious_sequence())==parseInt(list.get(j).getNext_sequence()))
-                {
-                  sequence.add(input_list.get(j));
-                }
-
-            }
-
-            a.setPrecedingActions(sequence);
             input_list.add(a);
+            index_map.put(action_name,i);
 
         }
+        for(int i=0;i<list.size();i++)
+        {
+            List<Action> sequence = new ArrayList<>();
+            for(int j=0;j<list.get(i).sequences.size();j++)
+            {
+                if(list.get(i).sequences.get(j)!="-")
+                {
+                    //System.out.print(list.get(i).sequences.get(j)+" ");
+                    //System.out.println(index_map.get(list.get(i).sequences.get(j)));
+                    int index = index_map.get(list.get(i).sequences.get(j));
+                    sequence.add(input_list.get(index));
+                }
+            }
+            System.out.println();
+            input_list.get(i).setPrecedingActions(sequence);
+        }
+
 
         for(int i=0;i<input_list.size();i++)
         {
