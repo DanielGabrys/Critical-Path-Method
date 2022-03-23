@@ -4,16 +4,16 @@ import java.util.List;
 
 public class Action
 {
-    private String name;
-    private float duration;
-    private List<Action> precedingActions;
-    private float earliestStart;
-    private float latestStart;
-    private float earliestFinish;
-    private float latestFinish;
-    private float reserve;
-    private int startEvent = 0;
-    private int endEvent = 0;
+    private String name;                    //nazwa
+    private float duration;                 //czas trwania
+    private List<Action> precedingActions;  //lista zdarzeń poprzedzających
+    private float earliestStart;            //ES
+    private float latestStart;              //LS
+    private float earliestFinish;           //EF
+    private float latestFinish;             //LF
+    private float reserve;                  //rezerwa czasowa
+    private int startEvent = 0;             //zdarzenie rozpoczynające czynność
+    private int endEvent = 0;               //zdarzenie kończące czynność
 
     public Action(String name, float duration, List<Action> precedingActions)
     {
@@ -31,6 +31,7 @@ public class Action
         this.endEvent = endEvent;
     }
 
+    //wyświetlanie wartości pól obiektu (bez listy zdarzeń poprzedzających)
     public void display()
     {
         System.out.println("Action "+name+"\nDuration: "+duration+"\nES: "+earliestStart+"\nEF: "
@@ -38,6 +39,7 @@ public class Action
                 +startEvent+"\nEnd event: "+endEvent+"\n");
     }
 
+    //wyświetlanie wartości pól obiektu (razem z listą zdarzeń poprzedzających)
     public void displayWithList()
     {
         System.out.print("Action "+name+"\nDuration: "+duration+"\nES: "+earliestStart+"\nEF: "
@@ -53,6 +55,7 @@ public class Action
         else System.out.println("\n");
     }
 
+    //GETTERY I SETTERY
     public String getName() {
         return name;
     }
