@@ -1,5 +1,6 @@
 package boil.cpm;
 
+import TestCases.Test;
 import algorithm.Action;
 import algorithm.CPMAlgorithm;
 import javafx.event.EventHandler;
@@ -24,78 +25,8 @@ import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
 
-    ObservableList<Activity> list = FXCollections.observableArrayList(
-
-            // Test 1
-            //pozorne
-
-            new Activity("A","6","-"),
-            new Activity("B","8","-"),
-            new Activity("C","12","A,B"),
-            new Activity("D","4","C"),
-            new Activity("E","6","C"),
-            new Activity("F","15","D,E"),
-            new Activity("G","12","E"),
-            new Activity("H","8","F,G")
-
-
-    /*
-            new Activity("A","3","-"),
-            new Activity("B","4","A"),
-            new Activity("C","6","A"),
-            new Activity("D","7","B"),
-            new Activity("E","1","D"),
-            new Activity("F","2","C"),
-            new Activity("G","3","C"),
-            new Activity("H","4","G"),
-            new Activity("I","1","E,F,H"),
-            new Activity("J","2","I")
-          */
-
-
-            /*
-            new Activity("A","5","-"),
-            new Activity("B","7","-"),
-            new Activity("C","6","A"),
-            new Activity("D","8","A"),
-            new Activity("E","3","B"),
-            new Activity("F","4","C"),
-            new Activity("G","2","C"),
-            new Activity("H","5","E,D,F")
-            */
-
-            /*
-            new Activity("A","5","-"),
-            new Activity("B","7","A"),
-            new Activity("C","6","A,B")
-            */
-
-            /*
-            new Activity("A","5","1-2"),
-            new Activity("B","7","1-3"),
-            new Activity("C","6","2-4"),
-            new Activity("D","8","2-5"),
-            new Activity("E","3","3-5"),
-            new Activity("F","4","4-5"),
-            new Activity("G","2","4-6"),
-            new Activity("H","5","5-6")
-             */
-
-
-            /*
-            new Activity("A","3","1-2"),
-            new Activity("B","4","2-3"),
-            new Activity("C","6","2-4"),
-            new Activity("D","7","3-5"),
-            new Activity("E","1","5-7"),
-            new Activity("F","2","4-7"),
-            new Activity("G","3","4-6"),
-            new Activity("H","4","6-7"),
-            new Activity("I","1","7-8"),
-            new Activity("J","2","8-9")
-            */
-    );
-
+    Test t = new Test();
+    ObservableList<Activity> list = t.loadTest(5);
 
     @FXML
     private Label title_label;
