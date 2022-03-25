@@ -1,5 +1,6 @@
 package algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Action
@@ -14,6 +15,8 @@ public class Action
     private float reserve;                  //rezerwa czasowa
     private int startEvent = 0;             //zdarzenie rozpoczynające czynność
     private int endEvent = 0;               //zdarzenie kończące czynność
+    private List<Integer> endEventHelpList = new ArrayList<>(); //pomocnicza lista do wyznaczania czynności pozornych
+
 
     public Action(String name, float duration, List<Action> precedingActions)
     {
@@ -115,5 +118,11 @@ public class Action
     }
     public void setEndEvent(int endEvent) {
         this.endEvent = endEvent;
+    }
+    public List<Integer> getEndEventHelpList() {
+        return endEventHelpList;
+    }
+    public void setEndEventHelpList(List<Integer> endEventHelpList) {
+        this.endEventHelpList = endEventHelpList;
     }
 }

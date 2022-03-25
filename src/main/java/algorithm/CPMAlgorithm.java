@@ -2,6 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 //WAŻNA UWAGA! klasa po skończeniu testów powinna udostępniać na zewnątrz tylko metodę determineCriticalPath() -
@@ -13,120 +14,200 @@ public class CPMAlgorithm
     //z poprzedniej metody
     //private static int eventNumber = 0;
     public static int eventNumber = 0;
+    //pomocnicza zmienna służąca do nadawania unikalnych nazw czynnościom pozornym
+    //private static int apparentEventNumber = 0;
+    public static int apparentEventNumber = 0;
 
-    //,,wstępne" wyznaczenie numerów zdarzeń w każdej czynności
+    //pomocnicza funkcja sprawdzająca czy listy zawierają te same elementy (kolejność elementów w liście nie
+    //ma znaczenia, nie sprawdza czy wartości się powtarzają (zwróci true dla list {A,A,B} i {B,A}))
+    private static <T> boolean doTheseListsContainTheSameElements(List<T> list1, List<T> list2)
+    {
+        return new HashSet<>(list1).equals(new HashSet<>(list2));
+    }
+
+    //,,wstępne" wyznaczenie numerów zdarzeń w każdej czynności i dodanie czynności pozornych ,,typu 1"
     //private static void determineStartAndEndEvents(List<Action> actions)
     public static void determineStartAndEndEvents(List<Action> actions)
     {
-        //pomocnicza lista czynności, które zostały już przetworzone
-        List<Action> processedActions = new ArrayList<>();
-        //,,zaznaczenie" czynności niemających poprzedników jako czynności startowe sieci
+        //pomocnicza lista na czynności już przetworzone
+        List<Action> processedActions = new ArrayList<Action>();
+        //pętla po czynnościach wyznaczająca zdarzenia początkowe
         for(Action action : actions)
         {
-            if(action.getPrecedingActions().isEmpty()) action.setStartEvent(1);
-        }
-
-        //flaga służąca sprawdzeniu czy przetwarzana czynność jest czynnością końcową sieci
-        boolean isEnd = true;
-        //pętla po liście czynności nadająca numery zdarzeniom
-        for(Action action : actions)
-        {
-            //wewnętrzna pętla po liście czynności (,,sprawdzenie każdej czynności z każdą")
-            for(Action action1 : actions)
+            //każde zdarzenie początkowe odpowiada unikalnemu zestawowi czynności poprzedzających, więc trzeba dodać
+            //nowe zdarzenie początkowe tylko jeśli wystąpił wcześniej niespotkany zestaw poprzedników
+            for(int i=0; i<processedActions.size(); i++)
             {
-                //pętla po liście czynności już przetworzonych
-                for(Action processed : processedActions)
+                //,,synchronizacja" z istniejącym zdarzeniem początkowym
+                if(doTheseListsContainTheSameElements(action.getPrecedingActions(), processedActions.get(i).getPrecedingActions()))
                 {
-                    //sprawdzenie czy czynność zawiera na liście zdarzeń poprzedzających czynność z iteracji oraz
-                    //jakąkolwiek czynność już przetworzoną (ponieważ czynności przetworzone mają już wyznaczone
-                    //numery zdarzeń końcowych (poza czynnościami kończącymi sieć), a trzeba zsynchronizować)
-                    if (action1.getPrecedingActions().contains(action)
-                            && action1.getPrecedingActions().contains(processed))
-                    {
-                        action.setEndEvent(processed.getEndEvent());
-                        break;
-                    }
+                    action.setStartEvent(processedActions.get(i).getStartEvent());
+                    break;
                 }
             }
-            //wpisanie numeru zdarzenia początkowego czynnościom, które go jeszcze nie mają
+            //dodanie nowego zdarzenia początkowego jeśli przetwarzana czynność nadal takowego nie ma
             if(action.getStartEvent()==0)
             {
-                //pętla po zdarzeniach poprzedzających zdrzenie z iteracji
-                for(Action preceder : action.getPrecedingActions())
-                {
-                    //jeśli którykolwiek poprzednik czynności ma już wyznaczone zdarzenie końcowe, to w celu
-                    //synchronizacji czynność następująca po nim musi się tam zaczynać
-                    if(preceder.getEndEvent() != 0)
-                    {
-                        action.setStartEvent(preceder.getEndEvent());
-                        break;
-                    }
-                }
-                //jeżeli czynność nadal nie ma ustawionego zdarzenia początkowego, to przypisanie mu wartości
-                //inkrementowanej zmiennej pomocniczej
-                if(action.getStartEvent()==0)
-                {
-                    action.setStartEvent(eventNumber);
-                    eventNumber++;
-                }
+                action.setStartEvent(eventNumber);
+                eventNumber++;
             }
-            //wpisanie numeru zdarzenia końcowego czynnościom, które go jeszcze nie mają
-            if(action.getEndEvent()==0)
-            {
-                //sprawdzenie czy jakakolwiek czynność z sieci zawiera na liście poprzedników czynność z tej
-                //iteracji (czy czynność z iteracji jest czynnością końcową sieci)
-                for(Action action1 : actions)
-                {
-                    if(action1.getPrecedingActions().contains(action))
-                    {
-                        isEnd = false;
-                        break;
-                    }
-                }
-                //jeśli czynność nie jest czynnością końcową sieci, to przypisanie jej zdarzenia końcowego
-                //wartości inkrementowanej zmiennej pomocniczej
-                if(!isEnd)
-                {
-                    action.setEndEvent(eventNumber);
-                    eventNumber++;
-                }
-                //przywrócenie fladze wartości ,,domyślnej" na następną iterację
-                isEnd = true;
-            }
-            //dodanie czynności do listy przetworzonych
+            //dodanie czynności do listy czynności przetworzonych
             processedActions.add(action);
         }
+
+        //pętla po czynnościach wyznaczająca ,,wstępną listę zdarzeń końcowych"
+        for(Action action1 : actions)
+        {
+            for(Action action2 : actions)
+            {
+                //dodanie do listy zdarzeń końcowych początków czynności mających przetwarzaną czynność na liście
+                //poprzedników [dodawane są tylko unikalne wartości, aby później algorytm się nie ,,wysypał"]
+                if(action2.getPrecedingActions().contains(action1)
+                        && !action1.getEndEventHelpList().contains(action2.getStartEvent()))
+                {
+                    action1.getEndEventHelpList().add(action2.getStartEvent());
+                }
+            }
+        }
+
+        //pomocnicza lista na czynności pozorne
+        List<Action> apparentActions = new ArrayList<>();
+        //zmienne pomocnicze
+        boolean doesThisActionEndIndependently = false;
+        int independentEventNumber = 0;
+        //pętla wyznaczająca ,,ostateczne zdarzenia końcowe" i czynności pozorne
+        for(Action action : actions)
+        {
+            //jeśli czynność ma tylko jedno zdarzenie końcowe na liście pomocniczej, to to zdarzenie staje się
+            //jego zdarzeniem końcowym
+            if(action.getEndEventHelpList().size()==1)
+            {
+                action.setEndEvent(action.getEndEventHelpList().get(0));
+            }
+            //jeśli czynność ma na liście pomocniczej wiele zdarzeń końcowych, to trzeba dodać czynność pozorną
+            else if(action.getEndEventHelpList().size()>=2)
+            {
+                //sprawdzenie czy przetwarzana czynność kończy się gdzieś ,,samotnie" czy tylko razem z innymi
+                for(Action actionHelp : actions)
+                {
+                    if(actionHelp.getPrecedingActions().size()==1 && actionHelp.getPrecedingActions().contains(action))
+                    {
+                        doesThisActionEndIndependently = true;
+                        //zapisanie miejsca zakończenia ,,samotnej" czynności jeśli takie istnieje
+                        independentEventNumber = actionHelp.getStartEvent();
+                        break;
+                    }
+                }
+                //jeśli czynność kończy się gdzieś ,,samotnie"
+                if(doesThisActionEndIndependently)
+                {
+                    //pętla po wszystkich ,,zdarzeniach końcowych" przetwarzanej czynności
+                    for(int endEvent : action.getEndEventHelpList())
+                    {
+                        //,,samotne" zakończenie czynności jest jej ,,realnym" zdarzeniem końcowym
+                        if(endEvent==independentEventNumber)
+                        {
+                            action.setEndEvent(independentEventNumber);
+                        }
+                        //poprowadzenie czynności pozornej od ,,samotnego" zakończenia czynności do jej
+                        //zakończenia ,,w zestawie z innymi"
+                        else
+                        {
+                            //dodanie czynności pozornej
+                            Action apparent = new Action("apparent"+apparentEventNumber, 0.F,
+                                    new ArrayList<Action>(){{add(action);}}, independentEventNumber,
+                                    endEvent);
+                            apparentActions.add(apparent);
+                            //,,synchronizacja" poprzedników
+                            for(Action actionHelp : actions)
+                            {
+                                if(actionHelp.getStartEvent()==endEvent)
+                                {
+                                    actionHelp.getPrecedingActions().remove(action);
+                                    actionHelp.getPrecedingActions().add(apparent);
+                                }
+                            }
+                            apparentEventNumber++;
+                        }
+                    }
+                }
+                //jeśli czynność kończy się tylko razem z innymi
+                else
+                {
+                    //dodanie pozornego ,,samotnego" zakończenia czynności
+                    action.setEndEvent(eventNumber);
+                    //poprowadzenie czynności pozornych od pozornego ,,samotnego" zakończenia czynności do jej
+                    //zakończeń ,,w zestawie z innymi"
+                    for(int endEvent : action.getEndEventHelpList())
+                    {
+                        //dodanie czynności pozornej
+                        Action apparent = new Action("apparent"+apparentEventNumber, 0.F,
+                                new ArrayList<Action>(){{add(action);}}, eventNumber,
+                                endEvent);
+                        apparentActions.add(apparent);
+                        //,,synchronizacja" poprzedników
+                        for(Action actionHelp : actions)
+                        {
+                            if(actionHelp.getStartEvent()==endEvent)
+                            {
+                                actionHelp.getPrecedingActions().remove(action);
+                                actionHelp.getPrecedingActions().add(apparent);
+                            }
+                        }
+                        apparentEventNumber++;
+                    }
+                    eventNumber++;
+                }
+                //,,wyzerowanie" zmiennych pomocniczych
+                doesThisActionEndIndependently = false;
+                independentEventNumber = 0;
+            }
+        }
+        //dodanie czynności pozornych do listy wszystkich czynności
+        for(Action action : apparentActions) actions.add(action);
     }
 
-    //DO ZWERYFIKOWANIA
+    //dodanie czynności pozornych ,,typu 2"
     //private static void addApparentActions(List<Action> actions)
     public static void addApparentActions(List<Action> actions)
     {
-        int apparentEventNumber = 1;
+        //lista pomocnicza na czynności pozorne
+        List<Action> apparentActions = new ArrayList<>();
+        //podwójna pętla po liście czynności (sprawdzanie każdej czynności z każdą)
         for(int i=0; i<actions.size(); i++)
         {
             for(int j=i+1; j<actions.size(); j++)
             {
+                //dodanie czynności pozornej jeżeli dwie różne czynności mają te same zdarzenia początkowe
+                //i końcowe
                 if(actions.get(i) != actions.get(j)
                         && actions.get(i).getStartEvent() == actions.get(j).getStartEvent()
                         && actions.get(i).getEndEvent() == actions.get(j).getEndEvent())
                 {
+                    //dodanie czynności pozornej
                     int J = j;
-                    actions.add(new Action("apparent"+apparentEventNumber, 0.F,
+                    Action apparent = new Action("apparent"+apparentEventNumber, 0.F,
                             new ArrayList<Action>(){{add(actions.get(J));}}, eventNumber,
-                            actions.get(j).getEndEvent()));
+                            actions.get(j).getEndEvent());
+                    apparentActions.add(apparent);
                     actions.get(j).setEndEvent(eventNumber);
-//                    int I = i;
-//                    actions.add(new Action("apparent"+apparentEventNumber, 0.F,
-//                            new ArrayList<Action>(){{add(actions.get(I));}}, eventNumber,
-//                            actions.get(i).getEndEvent()));
-//                    actions.get(i).setEndEvent(eventNumber);
-
+                    //,,synchronizacja" poprzedników
+                    for(Action actionHelp : actions)
+                    {
+                        if(actionHelp.getStartEvent()==apparent.getEndEvent())
+                        {
+                            actionHelp.getPrecedingActions().remove(actions.get(J));
+                            actionHelp.getPrecedingActions().add(apparent);
+                        }
+                    }
+                    //zaktualizowanie zmiennych pomocniczych
                     eventNumber++;
                     apparentEventNumber++;
                 }
             }
         }
+        //dodanie czynności pozornych do listy wszystkich czynności w sieci
+        for(Action action : apparentActions) actions.add(action);
     }
 
     //,,dodanie zdarzenia końcowego" w czynnościach kończących sieć
@@ -150,41 +231,49 @@ public class CPMAlgorithm
         //zmienne pomocnicze
         int newStart = 0;
         int newEnd = 0;
-        //pętla iterująca po wszystkich czynnościach
-        for(Action action : actions)
+        boolean areNumbersCorrect = false;
+        while(!areNumbersCorrect)
         {
-            //trzeba zmienić numerację zdarzeń tylko jeżeli numer zdarzenia zaczynającego jest większy od numeru
-            //zdarzenia kończącego
-            if(action.getStartEvent() > action.getEndEvent())
+            areNumbersCorrect = true;
+            //pętla iterująca po wszystkich czynnościach
+            for (Action action : actions)
             {
-                //,,zamiana numerów zdarzeń w obrębie czynności"
-                newEnd = action.getStartEvent();
-                newStart = action.getEndEvent();
-                action.setStartEvent(newStart);
-                action.setEndEvent(newEnd);
-                //zaktualizowanie numeru zmienionego zdarzenia w całej sieci
-                for(Action action1 : actions)
+                //trzeba zmienić numerację zdarzeń tylko jeżeli numer zdarzenia zaczynającego jest większy od numeru
+                //zdarzenia kończącego
+                if (action.getStartEvent() > action.getEndEvent())
                 {
-                    //nie zmieniamy tam, gdzie zmieniliśmy przed wewnętrzną pętlą
-                    if(action != action1)
+                    //,,zamiana numerów zdarzeń w obrębie czynności"
+                    newEnd = action.getStartEvent();
+                    newStart = action.getEndEvent();
+                    action.setStartEvent(newStart);
+                    action.setEndEvent(newEnd);
+                    //zaktualizowanie numeru zmienionego zdarzenia w całej sieci
+                    for (Action action1 : actions)
                     {
-                        if (action1.getStartEvent() == newStart)
+                        //nie zmieniamy tam, gdzie zmieniliśmy przed wewnętrzną pętlą
+                        if (action != action1)
                         {
-                            action1.setStartEvent(newEnd);
-                        }
-                        else if (action1.getEndEvent() == newEnd)
-                        {
-                            action1.setEndEvent(newStart);
-                        }
-                        else if (action1.getEndEvent() == newStart)
-                        {
-                            action1.setEndEvent(newEnd);
-                        }
-                        else if (action1.getStartEvent() == newEnd)
-                        {
-                            action1.setStartEvent(newStart);
+                            if (action1.getStartEvent() == newStart)
+                            {
+                                action1.setStartEvent(newEnd);
+                            }
+                            else if (action1.getEndEvent() == newEnd)
+                            {
+                                action1.setEndEvent(newStart);
+                            }
+                            else if (action1.getEndEvent() == newStart)
+                            {
+                                action1.setEndEvent(newEnd);
+                            }
+                            else if (action1.getStartEvent() == newEnd)
+                            {
+                                action1.setStartEvent(newStart);
+                            }
                         }
                     }
+                    //po jednej zamianie trzeba sprawdzić czy wcześniej sprawdzone czynności są dalej w porządku
+                    areNumbersCorrect = false;
+                    break;
                 }
             }
         }
@@ -278,10 +367,12 @@ public class CPMAlgorithm
     public static void determineCriticalPath(List<Action> actions)
     {
         //nadanie zmiennej eventNumber wartości potrzebnej do poprawnego działania determineStartAndEndEvents()
-        eventNumber = 2;
-        //,,wstępne" wyznaczenie numerów zdarzeń w każdej czynności
+        eventNumber = 1;
+        //nadanie zmiennej apparentEventNumber odpowiedniej wartości
+        apparentEventNumber = 1;
+        //,,wstępne" wyznaczenie numerów zdarzeń w każdej czynności i dodanie czynności pozornych ,,typu 1"
         determineStartAndEndEvents(actions);
-        //dodanie czynności pozornych
+        //dodanie czynności pozornych ,,typu 2"
         addApparentActions(actions);
         //,,dodanie zdarzenia końcowego" w czynnościach kończących sieć
         setEndingEvents(actions);
@@ -299,5 +390,6 @@ public class CPMAlgorithm
         //Collections.sort(actions, new ActionAscendingComparator());
         //wyzerowanie zmiennej eventNumber
         eventNumber = 0;
+        apparentEventNumber = 0;
     }
 }
