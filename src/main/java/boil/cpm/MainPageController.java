@@ -26,8 +26,9 @@ public class MainPageController implements Initializable {
 
     ObservableList<Activity> list = FXCollections.observableArrayList(
 
+            // Test 1
             //pozorne
-            /*
+
             new Activity("A","6","-"),
             new Activity("B","8","-"),
             new Activity("C","12","A,B"),
@@ -36,9 +37,9 @@ public class MainPageController implements Initializable {
             new Activity("F","15","D,E"),
             new Activity("G","12","E"),
             new Activity("H","8","F,G")
-             */
 
 
+    /*
             new Activity("A","3","-"),
             new Activity("B","4","A"),
             new Activity("C","6","A"),
@@ -49,6 +50,8 @@ public class MainPageController implements Initializable {
             new Activity("H","4","G"),
             new Activity("I","1","E,F,H"),
             new Activity("J","2","I")
+          */
+
 
             /*
             new Activity("A","5","-"),

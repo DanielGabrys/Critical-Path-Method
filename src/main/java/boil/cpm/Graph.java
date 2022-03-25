@@ -10,6 +10,7 @@ import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
 
+import java.time.Duration;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
@@ -100,9 +101,13 @@ public class Graph
             String weight = String.valueOf(a.get(i).getDuration())+" "+String.valueOf(a.get(i).getName());
             String action_name= a.get(i).getName();
             String start_node = String.valueOf(a.get(i).getStartEvent());
-            String end_node = String.valueOf(a.get(i).getEndEvent())
-                    ;
+            String end_node = String.valueOf(a.get(i).getEndEvent());
+
             graph.addEdge(action_name,start_node,end_node,true).setAttribute("length",weight);
+            if(a.get(i).getDuration()==0)
+            {
+                graph.getEdge(i).setAttribute("ui.class", "fake");
+            }
             //graph.addEdge("A", "1", "2").setAttribute("length","3 A");
         }
 
@@ -216,6 +221,12 @@ public class Graph
                      "fill-color: green;"   +
                     "padding: 5px;"+
                     "text-size: 20px;" +
-                    "}";
+                    "}"+
+             "edge.fake " +
+                     "{"+
+                     "fill-color: grey"+
+                     "arrow-shape:diamond;"+
+                     "arrow-size:20px, 20px;"+
+                     "}";
 
 }
