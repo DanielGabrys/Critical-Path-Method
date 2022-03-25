@@ -2,25 +2,31 @@ package boil.cpm;
 
 import javafx.beans.property.StringProperty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static java.lang.Integer.parseInt;
 
 public class Activity {
     private String activity;
     private String time;
     private String sequence;
-    private String previous_sequence;
-    private String next_sequence;
-
+    public List<String> sequences = new ArrayList<>();
 
     public Activity(String activity, String time, String sequence)
     {
         this.activity = activity;
         this.time = time;
         this.sequence=sequence;
+        this.sequences=sequences();
 
-        String segments[] = sequence.split("-");
-        this.previous_sequence= segments[0];
-        this.next_sequence= segments[segments.length - 1];
+    }
+
+    public List<String> sequences()
+    {
+        String[] segments = sequence.split(",");
+        return new ArrayList<>(Arrays.asList(segments));
     }
 
     public void printAll()
@@ -32,10 +38,6 @@ public class Activity {
         return activity;
     }
 
-    public String getPrevious_sequence()
-    {
-        return previous_sequence;
-    }
 
     public String getSequence() {
         return sequence;
@@ -43,10 +45,6 @@ public class Activity {
 
     public String getTime() {
         return time;
-    }
-
-    public String getNext_sequence() {
-        return next_sequence;
     }
 
     public void setActivity(String activity) {
@@ -60,8 +58,6 @@ public class Activity {
     public void setSequence(String sequence)
     {
         this.sequence = sequence;
-        String segments[] = sequence.split("-");
-        this.previous_sequence= segments[0];
-        this.next_sequence= segments[segments.length - 1];
+        this.sequences=sequences();
     }
 }
