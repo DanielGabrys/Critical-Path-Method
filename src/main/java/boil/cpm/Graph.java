@@ -35,7 +35,9 @@ public class Graph
 
     protected void sleep()
         {
-            try { Thread.sleep(1500); } catch (Exception e) {}
+            try
+            {
+                Thread.sleep(1500); } catch (Exception e) {}
         }
 
     void markCriticalPath(List<String> a)
@@ -52,6 +54,7 @@ public class Graph
         List<Action> input_list = new ArrayList<>();
         Map<String, Integer> index_map = new HashMap<String, Integer>();
 
+
         for(int i=0;i<list.size();i++)
         {
             String action_name= list.get(i).getActivity();
@@ -61,17 +64,21 @@ public class Graph
             input_list.add(a);
             index_map.put(action_name,i);
 
+
         }
+
         for(int i=0;i<list.size();i++)
         {
             List<Action> sequence = new ArrayList<>();
             for(int j=0;j<list.get(i).sequences.size();j++)
             {
-                if(list.get(i).sequences.get(j)!="-")
+
+                if(!list.get(i).sequences.get(j).equals("-"))
                 {
+
                     //System.out.print(list.get(i).sequences.get(j)+" ");
                     //System.out.println(index_map.get(list.get(i).sequences.get(j)));
-                    int index = index_map.get(list.get(i).sequences.get(j));
+                   int index = index_map.get(list.get(i).sequences.get(j));
                     sequence.add(input_list.get(index));
                 }
             }
@@ -89,6 +96,8 @@ public class Graph
             }
             System.out.println();
         }
+
+
         return input_list;
     }
 

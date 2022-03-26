@@ -12,6 +12,14 @@ public class Test
        ObservableList<Activity> a = FXCollections.observableArrayList();
        switch (id)
        {
+
+           case 0:
+           {
+               a = FXCollections.observableArrayList(
+                       );
+               break;
+           }
+
            case 1:
            {
                a = FXCollections.observableArrayList(
@@ -73,6 +81,26 @@ public class Test
                        new Activity("F","4","C"),
                        new Activity("G","2","C"),
                        new Activity("H","5","E,D,F"));
+               break;
+           }
+
+           case 6:
+           {
+               a = FXCollections.observableArrayList(
+                       new Activity("A","2","-"),
+                       new Activity("B","4","A"),
+                       new Activity("C","10","B"),
+                       new Activity("D","6","C"),
+                       new Activity("E","4","C"),
+                       new Activity("F","5","E"),
+                       new Activity("G","7","D"),
+                       new Activity("H","9","E,G"),
+                       new Activity("I","7","C"),
+                       new Activity("J","8","F,I"),
+                       new Activity("K","4","J"),
+                       new Activity("L","5","J"),
+                       new Activity("M","2","H"),
+                       new Activity("N","6","K,L"));
                break;
            }
 
