@@ -3,6 +3,7 @@ package boil.cpm;
 import TestCases.Test;
 import algorithm.Action;
 import algorithm.CPMAlgorithm;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.cell.TextFieldTableCell;
 import org.graphstream.graph.*;
@@ -25,8 +26,10 @@ import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
 
+    static int close=0;
+
     Test t = new Test();
-    ObservableList<Activity> list = t.loadTest(5);
+    ObservableList<Activity> list = t.loadTest(6);
 
     @FXML
     private Label title_label;
@@ -69,16 +72,16 @@ public class MainPageController implements Initializable {
     {
 
 
+        /*
         System.out.println(activity_input_field.getText());
         System.out.println(time_input_field.getText());
         System.out.println(sequence_input_field.getText());
+        */
 
         Activity a = new Activity(activity_input_field.getText(),time_input_field.getText(),sequence_input_field.getText());
-        list.add(a);
-        table_input.setItems(list);
+        this.list.add(a);
+        table_input.setItems(this.list);
 
-       // System.out.println(a.getPrevious_sequence());
-       // System.out.println(a.getNext_sequence());
     }
 
     @FXML
@@ -161,6 +164,8 @@ public class MainPageController implements Initializable {
         table_input.setItems(list);
 
     }
+
+
 
 
 }
