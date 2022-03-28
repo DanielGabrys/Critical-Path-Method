@@ -159,7 +159,7 @@ public class Graph
 
 
         String path=  calculateCriticalPathAction(a);
-        critical.setAttribute("label", "CRITICAL PATH: "+"\n"+path);
+        critical.setAttribute("label", "CRITICAL PATH: "+path);
 
         // legend
         Sprite legend = sman.addSprite("legend");
@@ -167,6 +167,7 @@ public class Graph
         legend.setAttribute("ui.class", "legend");
 
         String path_legend= "ES, EF, LS, LF, R";
+
         legend.setAttribute("label", path_legend);
 
         // legend_desc
@@ -176,6 +177,7 @@ public class Graph
 
         String path_legend_desc= "Earliest Start, Earliest Finish, Latest Start, Latest Finish, Time Reserve";
         legend_desc.setAttribute("label", path_legend_desc);
+
 
         markCriticalPath(calculateCriticalPath(a));
 
