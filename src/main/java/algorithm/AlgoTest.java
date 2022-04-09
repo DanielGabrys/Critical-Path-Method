@@ -14,23 +14,8 @@ public class AlgoTest {
 //        Action E = new Action("E", 4.F, new ArrayList<Action>(){{add(D);}});
 //        Action F = new Action("F", 3.F, new ArrayList<Action>(){{add(B);add(C);add(D);}});
 //        List<Action> testList = new ArrayList<>(){{add(A);add(B);add(C);add(D);add(E);add(F);}};
-//
-//        CPMAlgorithm.eventNumber = 2;
-//        CPMAlgorithm.determineStartAndEndEvents(testList);
-//        //for(Action action : testList) action.display();
-//        CPMAlgorithm.addApparentActions(testList);
-//        //for(Action action : testList) action.display();
-//        CPMAlgorithm.setEndingEvents(testList);
-//        //for(Action action : testList) action.displayWithList();
-//        CPMAlgorithm.numberEvents(testList);
-//        //for(Action action : testList) action.displayWithList();
-//        Collections.sort(testList,  new ActionAscendingComparator());
-//        CPMAlgorithm.stepForward(testList);
-//        //for(Action action : testList) action.displayWithList();
-//        //Collections.sort(testList, new ActionDescendingComparator());
-//        CPMAlgorithm.stepBackwardAndCalculateReserve(testList);
-//        //Collections.sort(testList,  new ActionAscendingComparator());
-//        //for(Action action : testList) action.displayWithList();
+//        CPMAlgorithm.determineCriticalPath(testList);
+//        for(Action action : testList) action.displayWithList();
 
 
 
