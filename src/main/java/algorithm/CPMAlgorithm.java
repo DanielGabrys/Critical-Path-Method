@@ -5,18 +5,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-//WAŻNA UWAGA! klasa po skończeniu testów powinna udostępniać na zewnątrz tylko metodę determineCriticalPath() -
-//z tego powodu w komentarzach znajdują się ,,prywatne wersje" metod i zmiennych, które powinny zastąpić ,,publiczne
-//wersje" w finalnej wersji programu
 public class CPMAlgorithm
 {
     //pomocnicza zmienna numerująca zdarzenia - musi być wspólna dla metod, bo często potrzebna jest jej wartość
     //z poprzedniej metody
-    //private static int eventNumber = 0;
-    public static int eventNumber = 0;
+    private static int eventNumber = 0;
     //pomocnicza zmienna służąca do nadawania unikalnych nazw czynnościom pozornym
-    //private static int apparentEventNumber = 0;
-    public static int apparentEventNumber = 0;
+    private static int apparentEventNumber = 0;
 
     //pomocnicza funkcja sprawdzająca czy listy zawierają te same elementy (kolejność elementów w liście nie
     //ma znaczenia, nie sprawdza czy wartości się powtarzają (zwróci true dla list {A,A,B} i {B,A}))
@@ -26,8 +21,7 @@ public class CPMAlgorithm
     }
 
     //,,wstępne" wyznaczenie numerów zdarzeń w każdej czynności i dodanie czynności pozornych ,,typu 1"
-    //private static void determineStartAndEndEvents(List<Action> actions)
-    public static void determineStartAndEndEvents(List<Action> actions)
+    private static void determineStartAndEndEvents(List<Action> actions)
     {
         //pomocnicza lista na czynności już przetworzone
         List<Action> processedActions = new ArrayList<Action>();
@@ -168,8 +162,7 @@ public class CPMAlgorithm
     }
 
     //dodanie czynności pozornych ,,typu 2"
-    //private static void addApparentActions(List<Action> actions)
-    public static void addApparentActions(List<Action> actions)
+    private static void addApparentActions(List<Action> actions)
     {
         //lista pomocnicza na czynności pozorne
         List<Action> apparentActions = new ArrayList<>();
@@ -211,8 +204,7 @@ public class CPMAlgorithm
     }
 
     //,,dodanie zdarzenia końcowego" w czynnościach kończących sieć
-    //private static void setEndingEvents(List<Action> actions)
-    public static void setEndingEvents(List<Action> actions)
+    private static void setEndingEvents(List<Action> actions)
     {
         for(Action action : actions)
         {
@@ -225,8 +217,7 @@ public class CPMAlgorithm
     }
 
     //ponumerowanie zdarzeń wg zasad ich numerowania
-    //private static void numberEvents(List<Action> actions)
-    public static void numberEvents(List<Action> actions)
+    private static void numberEvents(List<Action> actions)
     {
         //zmienne pomocnicze
         int newStart = 0;
@@ -280,8 +271,7 @@ public class CPMAlgorithm
     }
 
     //wykonanie ,,kroku w przód" z wyznaczeniem ES i EF
-    //private static void stepForward(List<Action> actions)
-    public static void stepForward(List<Action> actions)
+    private static void stepForward(List<Action> actions)
     {
         //zmienna pomocnicza
         float maxEF = 0.F;
@@ -313,8 +303,7 @@ public class CPMAlgorithm
     }
 
     //wykonanie ,,kroku w tył" z wyznaczeniem LS i LF oraz policzenie rezerwy czasowej
-    //private static void stepBackwardAndCalculateReserve(List<Action> actions)
-    public static void stepBackwardAndCalculateReserve(List<Action> actions)
+    private static void stepBackwardAndCalculateReserve(List<Action> actions)
     {
         //zmienne pomocnicze
         float minLS = 999999.F;
@@ -326,7 +315,6 @@ public class CPMAlgorithm
         //pętla iterująca po wszystkich czynnościach OD TYŁU, ponieważ teraz potrzebujemy pobierać wartości
         //z następników danej czynności ; pętla wyznacza LS, LF i rezerwę czasową
         for(int i=actions.size()-1; i>=0; i--)
-        //for(int i=0; i<actions.size(); i++)
         {
             //wyznaczenie LS i LF dla czynności kończących sieci
             if(actions.get(i).getEndEvent()==eventNumber)
@@ -382,13 +370,9 @@ public class CPMAlgorithm
         Collections.sort(actions, new ActionAscendingComparator());
         //wykonanie ,,kroku w przód" z wyznaczeniem ES i EF
         stepForward(actions);
-        //Collections.sort(actions, new ActionDescendingComparator()); CZY TO POTRZEBNE? [jeśli tu zmiana, to
-        // w funkcji stepBackward... trzeba odwrócić kierunek przechodzenia pętli]
         //wykonanie ,,kroku w tył" z wyznaczeniem LS i LF oraz policzenie rezerwy czasowej
         stepBackwardAndCalculateReserve(actions);
-        //to jest potrzebne do poprawnego wyświetlania, jeśli wcześniej nastąpiło sortowanie malejące
-        //Collections.sort(actions, new ActionAscendingComparator());
-        //wyzerowanie zmiennej eventNumber
+        //wyzerowanie zmienneych pomocniczych
         eventNumber = 0;
         apparentEventNumber = 0;
     }
