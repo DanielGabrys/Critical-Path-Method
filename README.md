@@ -8,7 +8,7 @@
   > ./dependency.sh
 
  2. Run run.sh or launch app manually
-  > ./dependency.sh
+  > ./run.sh
   
   or
   
@@ -18,3 +18,8 @@
 ### Windows
 
   1.Install JDK and Lauch it manually
+  
+  2.Open Terminal and run
+ 
+ >  java -jar CPM.jar
+  
